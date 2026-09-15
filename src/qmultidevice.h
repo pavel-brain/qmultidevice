@@ -1,3 +1,6 @@
+// Унифицированный класс для работы с последовательным портом, tcp и udp
+// Для удобства, чтоб всё в одном месте.
+
 #pragma once
 
 #include <QtNetwork/QNetworkAddressEntry>
