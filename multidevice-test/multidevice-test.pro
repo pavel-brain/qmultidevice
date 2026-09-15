@@ -15,7 +15,7 @@ SOURCES += \
     main.cpp
 
 HEADERS +=  \
-    ../src/mainwindow.hpp \
+    mainwindow.hpp \
     ../src/qmultidevice.h \
     ../src/qserialport_widget.hpp \
     ../src/qtcpclient_widget.hpp \
