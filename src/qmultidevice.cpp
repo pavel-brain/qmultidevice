@@ -330,15 +330,20 @@ bool QMultiDevice::openTCPSocket(const QHostAddress& remote_host, const uint16_t
     QObject::connect(m_tcp_socket, &QUdpSocket::readyRead, this, &QMultiDevice::readyRead);
 
     m_tcp_socket->connectToHost(remote_host, remote_port);
-    if (m_tcp_socket->waitForConnected(default_connect_timeout))
+    if (m_tcp_socket->error() == QAbstractSocket::SocketError::UnknownSocketError)
     {
-        m_remote_address.host = remote_host.toIPv4Address();
-        m_remote_address.port = remote_port;
-        emit interfaceStatus(
-            tr("TCP socket connected to %1:%2").arg(remoteHost().toString()).arg(remote_port));
-        emit connected(ConnectionType::TCPSocket);
-        return true;
+        if (m_tcp_socket->waitForConnected(default_connect_timeout))
+        {
+            m_remote_address.host = remote_host.toIPv4Address();
+            m_remote_address.port = remote_port;
+            emit interfaceStatus(
+                tr("TCP socket connected to %1:%2").arg(remoteHost().toString()).arg(remote_port));
+            emit connected(ConnectionType::TCPSocket);
+            return true;
+        }
+        socketErrorOccurred(m_tcp_socket->error());
     }
+
     close();
     return false;
 }
@@ -420,16 +425,22 @@ void QMultiDevice::socketErrorOccurred(const QAbstractSocket::SocketError& error
     if (m_udp_socket)
     {
         m_last_error_string = m_udp_socket->errorString();
+        emit errorOccurred(m_last_error_string);
     }
     else if (m_tcp_socket)
     {
         m_last_error_string = m_tcp_socket->errorString();
+        emit errorOccurred(m_last_error_string);
+        if (error == QAbstractSocket::SocketError::RemoteHostClosedError)
+        {
+            close();
+        }
     }
     else if (m_tcp_server)
     {
         m_last_error_string = m_tcp_server->errorString();
+        emit errorOccurred(m_last_error_string);
     }
-    emit errorOccurred(m_last_error_string);
 }
 
 void QMultiDevice::tcpServerNewConnection()
@@ -535,6 +546,16 @@ uint32_t QMultiDevice::write(const QByteArray& data)
                                    QString("%1:%2").arg(remoteHost().toString()).arg(remotePort()));
     }
     return count;
+}
+
+bool QMultiDevice::setDestination(const QString& dst)
+{
+    if (m_udp_socket || m_tcp_server)
+    {
+        m_remote_address = IPPORT(dst);
+        return true;
+    }
+    return false;
 }
 
 uint32_t QMultiDevice::writeTo(const QString& dst, const QByteArray& data)

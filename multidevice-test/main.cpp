@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
                      &w,
                      [&w, addLog](const QByteArray& data, const QString& from)
                      {
-                         addLog(w.tr("Received from %1 %2 bytes").arg(from, data.size()),
+                         addLog(w.tr("Received from %1 %2 bytes").arg(from).arg(data.size()),
                                 Qt::green);
                          addLog(data.toHex(' ').toUpper(), Qt::darkGreen, ">> ");
                      });
@@ -60,7 +60,8 @@ int main(int argc, char* argv[])
                      &w,
                      [&w, addLog](const QByteArray& data, const QString& to)
                      {
-                         addLog(w.tr("Transmitted to %1 %2 bytes").arg(to, data.size()), Qt::blue);
+                         addLog(w.tr("Transmitted to %1 %2 bytes").arg(to).arg(data.size()),
+                                Qt::blue);
                          addLog(data.toHex(' ').toUpper(), Qt::darkBlue, "<< ");
                      });
 
@@ -109,6 +110,8 @@ int main(int argc, char* argv[])
 
     QObject::connect(send_button, &QPushButton::clicked, &w, send_message);
     QObject::connect(message_edit, &QLineEdit::returnPressed, &w, send_message);
+
+    connection_tabs->setCurrentIndex(3);
 
     w.show();
     return a.exec();

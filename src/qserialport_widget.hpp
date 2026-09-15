@@ -50,16 +50,23 @@ public:
         connect(m_open_button, &QPushButton::clicked, this, &QSerialPortWidget::openClicked);
 
         auto layout = new QGridLayout(this);
-        layout->addWidget(m_serial_port_label, 0, 0, 1, 1);
-        layout->addWidget(m_refresh_ports_button, 0, 1, 1, 1);
+        layout->addWidget(m_serial_port_label, 0, 0);
+        layout->addWidget(m_refresh_ports_button, 0, 1);
         layout->addWidget(m_serial_port_combobox, 1, 0, 1, 2);
-        layout->addWidget(m_vidpid_label, 0, 2, 1, 1);
-        layout->addWidget(m_vidpid_edit, 1, 2, 1, 1);
-        layout->addWidget(m_baudrate_label, 0, 3, 1, 1);
-        layout->addWidget(m_baudrate_combobox, 1, 3, 1, 1);
-        layout->addWidget(m_parity_label, 0, 4, 1, 1);
-        layout->addWidget(m_parity_combobox, 1, 4, 1, 1);
-        layout->addWidget(m_open_button, 1, 5, 1, 1);
+        layout->addWidget(m_vidpid_label, 0, 2);
+        layout->addWidget(m_vidpid_edit, 1, 2);
+        layout->addWidget(m_baudrate_label, 0, 3);
+        layout->addWidget(m_baudrate_combobox, 1, 3);
+        layout->addWidget(m_parity_label, 0, 4);
+        layout->addWidget(m_parity_combobox, 1, 4);
+        layout->addWidget(m_open_button, 1, 5);
+
+        layout->setColumnStretch(0, 2);
+        layout->setColumnStretch(1, 1);
+        layout->setColumnStretch(2, 1);
+        layout->setColumnStretch(3, 1);
+        layout->setColumnStretch(4, 1);
+        layout->setColumnStretch(5, 1);
 
         setLayout(layout);
     }

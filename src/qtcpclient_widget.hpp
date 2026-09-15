@@ -16,29 +16,27 @@ public:
     {
         m_remote_host_label = new QLabel(tr("Remote host"), this);
         m_remote_host_edit = new QLineEdit("localhost", this);
-        m_remote_host_edit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
         m_remote_port_label = new QLabel(tr("Remote port"), this);
         m_remote_port_spinbox = new QSpinBox(this);
         m_remote_port_spinbox->setRange(0, 65535);
-        m_remote_port_spinbox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
         m_local_port_label = new QLabel(tr("Local port"), this);
         m_local_port_edit = new QLineEdit(this);
         m_local_port_edit->setEnabled(false);
-        m_local_port_edit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
         m_open_button = new QPushButton(tr("Client open"), this);
-        m_open_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         connect(m_open_button, &QPushButton::clicked, this, &QTCPClientWidget::openClicked);
 
         auto layout = new QGridLayout(this);
-        layout->addWidget(m_remote_host_label, 0, 0, 1, 1);
-        layout->addWidget(m_remote_host_edit, 1, 0, 1, 1);
-        layout->addWidget(m_remote_port_label, 0, 1, 1, 1);
-        layout->addWidget(m_remote_port_spinbox, 1, 1, 1, 1);
-        layout->addWidget(m_local_port_label, 0, 2, 1, 1);
-        layout->addWidget(m_local_port_edit, 1, 2, 1, 1);
-        layout->addItem(
-            new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Preferred), 1, 3, 1, 1);
-        layout->addWidget(m_open_button, 1, 4, 1, 1);
+        layout->addWidget(m_remote_host_label, 0, 0);
+        layout->addWidget(m_remote_host_edit, 1, 0);
+        layout->addWidget(m_remote_port_label, 0, 1);
+        layout->addWidget(m_remote_port_spinbox, 1, 1);
+        layout->addWidget(m_local_port_label, 0, 2);
+        layout->addWidget(m_local_port_edit, 1, 2);
+        layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 1, 3);
+        layout->addWidget(m_open_button, 1, 4);
         layout->setColumnStretch(0, 1);
         layout->setColumnStretch(1, 1);
         layout->setColumnStretch(2, 1);

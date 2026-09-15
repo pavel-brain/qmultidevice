@@ -92,6 +92,7 @@ public:
     uint16_t remotePort() const;
     uint16_t localPort() const;
 
+    bool setDestination(const QString& dst);
     uint32_t write(const QByteArray& data);
     uint32_t writeTo(const QString& dst, const QByteArray& data);
     uint32_t available();

@@ -19,12 +19,19 @@ public:
         m_remote_host_combobox = new QComboBox(this);
         m_remote_host_combobox->setEditable(true);
         m_remote_host_combobox->setCurrentText("localhost");
-        m_remote_host_combobox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        connect(m_remote_host_combobox,
+                &QComboBox::currentTextChanged,
+                this,
+                &QUDPSocketWidget::remoteHostChanged);
 
         m_remote_port_label = new QLabel(tr("Remote port"), this);
 
         m_remote_port_spinbox = new QSpinBox(this);
         m_remote_port_spinbox->setRange(0, 65535);
+        connect(m_remote_port_spinbox,
+                static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                this,
+                &QUDPSocketWidget::remotePortChanged);
 
         m_local_port_label = new QLabel(tr("Local port"), this);
 
@@ -32,19 +39,17 @@ public:
         m_local_port_spinbox->setRange(0, 65535);
 
         m_open_button = new QPushButton(tr("Socket bind"), this);
-        m_open_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         connect(m_open_button, &QPushButton::clicked, this, &QUDPSocketWidget::openClicked);
 
         auto layout = new QGridLayout(this);
-        layout->addWidget(m_remote_host_label, 0, 0, 1, 1);
-        layout->addWidget(m_remote_host_combobox, 1, 0, 1, 1);
-        layout->addWidget(m_remote_port_label, 0, 1, 1, 1);
-        layout->addWidget(m_remote_port_spinbox, 1, 1, 1, 1);
-        layout->addWidget(m_local_port_label, 0, 2, 1, 1);
-        layout->addWidget(m_local_port_spinbox, 1, 2, 1, 1);
-        layout->addItem(
-            new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Preferred), 1, 3, 1, 1);
-        layout->addWidget(m_open_button, 1, 4, 1, 1);
+        layout->addWidget(m_remote_host_label, 0, 0);
+        layout->addWidget(m_remote_host_combobox, 1, 0);
+        layout->addWidget(m_remote_port_label, 0, 1);
+        layout->addWidget(m_remote_port_spinbox, 1, 1);
+        layout->addWidget(m_local_port_label, 0, 2);
+        layout->addWidget(m_local_port_spinbox, 1, 2);
+        layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 1, 3);
+        layout->addWidget(m_open_button, 1, 4);
         layout->setColumnStretch(0, 1);
         layout->setColumnStretch(1, 1);
         layout->setColumnStretch(2, 1);
@@ -168,6 +173,25 @@ private slots:
             m_open_button->setText(tr("Socket bind"));
         }
         refresh();
+    }
+
+    void remoteHostChanged(const QString&)
+    {
+        if (m_device)
+        {
+            m_device->setDestination(QString("%1:%2")
+                                         .arg(m_remote_host_combobox->currentText())
+                                         .arg(m_remote_port_spinbox->value()));
+        }
+    }
+    void remotePortChanged(const int&)
+    {
+        if (m_device)
+        {
+            m_device->setDestination(QString("%1:%2")
+                                         .arg(m_remote_host_combobox->currentText())
+                                         .arg(m_remote_port_spinbox->value()));
+        }
     }
 
 private:
