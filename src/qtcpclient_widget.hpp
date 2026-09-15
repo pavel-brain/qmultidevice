@@ -6,6 +6,7 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
 
 class QTCPClientWidget : public QWidget
@@ -87,6 +88,24 @@ public:
                     m_device, &QMultiDevice::disconnected, this, &QTCPClientWidget::deviceClosed);
             }
         }
+    }
+
+    void saveSettings(QSettings& settings)
+    {
+        settings.beginGroup("tcp_client_settings");
+        settings.setValue("remote_host", m_remote_host_edit->text());
+        settings.setValue("remote_port", m_remote_port_spinbox->value());
+        settings.endGroup();
+    }
+    void loadSettings(QSettings& settings)
+    {
+        settings.beginGroup("tcp_client_settings");
+        m_remote_host_edit->setText(
+            settings.value("remote_host", m_remote_host_edit->text()).toString());
+        m_remote_port_spinbox->setValue(
+            settings.value("remote_port", m_remote_port_spinbox->value()).toInt());
+
+        settings.endGroup();
     }
 
 public slots:

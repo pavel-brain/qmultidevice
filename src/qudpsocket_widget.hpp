@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
 
 class QUDPSocketWidget : public QWidget
@@ -98,6 +99,26 @@ public:
                     m_device, &QMultiDevice::disconnected, this, &QUDPSocketWidget::deviceClosed);
             }
         }
+    }
+
+    void saveSettings(QSettings& settings)
+    {
+        settings.beginGroup("udp_socket_settings");
+        settings.setValue("remote_host", m_remote_host_combobox->currentText());
+        settings.setValue("remote_port", m_remote_port_spinbox->value());
+        settings.setValue("local_port", m_local_port_spinbox->value());
+        settings.endGroup();
+    }
+    void loadSettings(QSettings& settings)
+    {
+        settings.beginGroup("udp_socket_settings");
+        m_remote_host_combobox->setCurrentText(
+            settings.value("remote_host", m_remote_host_combobox->currentText()).toString());
+        m_remote_port_spinbox->setValue(
+            settings.value("remote_port", m_remote_port_spinbox->value()).toInt());
+        m_remote_port_spinbox->setValue(
+            settings.value("local_port", m_local_port_spinbox->value()).toInt());
+        settings.endGroup();
     }
 
 public slots:

@@ -7,9 +7,8 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSettings>
 #include <QToolButton>
-
-// #include <QtSerialPort/QSerialPortInfo>
 
 class QSerialPortWidget : public QWidget
 {
@@ -122,6 +121,23 @@ public:
                     m_device, &QMultiDevice::disconnected, this, &QSerialPortWidget::deviceClosed);
             }
         }
+    }
+
+    void saveSettings(QSettings& settings)
+    {
+        settings.beginGroup("serial_port_settings");
+        settings.setValue("baudrate", m_baudrate_combobox->currentText());
+        settings.setValue("parity", m_parity_combobox->currentIndex());
+        settings.endGroup();
+    }
+    void loadSettings(QSettings& settings)
+    {
+        settings.beginGroup("serial_port_settings");
+        m_baudrate_combobox->setCurrentText(
+            settings.value("baudrate", m_baudrate_combobox->currentText()).toString());
+        m_parity_combobox->setCurrentIndex(
+            settings.value("parity", m_parity_combobox->currentIndex()).toInt());
+        settings.endGroup();
     }
 
 public slots:

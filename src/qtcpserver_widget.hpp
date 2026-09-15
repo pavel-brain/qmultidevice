@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
 
 class QTCPServerWidget : public QWidget
@@ -106,6 +107,20 @@ public:
                         &QTCPServerWidget::devicePeerDetached);
             }
         }
+    }
+
+    void saveSettings(QSettings& settings)
+    {
+        settings.beginGroup("tcp_server_settings");
+        settings.setValue("local_port", m_local_port_spinbox->value());
+        settings.endGroup();
+    }
+    void loadSettings(QSettings& settings)
+    {
+        settings.beginGroup("tcp_server_settings");
+        m_local_port_spinbox->setValue(
+            settings.value("local_port", m_local_port_spinbox->value()).toInt());
+        settings.endGroup();
     }
 
 public slots:
